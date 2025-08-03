@@ -1,0 +1,8 @@
+{
+  "name": "Global Pizza Party 2026",
+  "description": "A vibrant, pizzeria-themed application that allows users to perform a simulated exchange of Stellar's XLM for custom application tokens.",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "prompt": ""
+}
