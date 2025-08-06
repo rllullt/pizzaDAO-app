@@ -1,22 +1,23 @@
 #![no_std]
-use soroban_sdk::{contract, contractimpl, vec, Env, String, Vec};
+use soroban_sdk::{contract, contractimpl, log, symbol_short, Env, Symbol};
+
+const COUNTER: Symbol = symbol_short!("COUNTER");
 
 #[contract]
-pub struct Contract;
+pub struct IncrementContract;
 
-// This is a sample contract. Replace this placeholder with your own contract logic.
-// A corresponding test example is available in `test.rs`.
-//
-// For comprehensive examples, visit <https://github.com/stellar/soroban-examples>.
-// The repository includes use cases for the Stellar ecosystem, such as data storage on
-// the blockchain, token swaps, liquidity pools, and more.
-//
-// Refer to the official documentation:
-// <https://developers.stellar.org/docs/build/smart-contracts/overview>.
 #[contractimpl]
-impl Contract {
-    pub fn hello(env: Env, to: String) -> Vec<String> {
-        vec![&env, String::from_str(&env, "Hello"), to]
+impl IncrementContract {
+    /// Increment increments an internal counter, and returns the value.
+    pub fn increment(env: Env) -> u32 {
+        let mut count: u32 = env.storage().instance().get(&COUNTER).unwrap_or(0);
+        log!(&env, "count: {}", count);
+
+        count += 1;
+        env.storage().instance().set(&COUNTER, &count);
+        env.storage().instance().extend_ttl(50, 100);
+
+        count
     }
 }
 
