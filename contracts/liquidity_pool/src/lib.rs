@@ -137,17 +137,18 @@ fn get_deposit_amounts(
     }
 }
 
-// Metadata that is added on to the WASM custom section
+// Metadata
 contractmeta!(
     key = "Description",
     val = "Constant product AMM with a .3% swap fee"
 );
 
 #[contract]
-struct LiquidityPool;
+pub struct LiquidityPool;
 
 #[contractimpl]
 impl LiquidityPool {
+    /// Initialize the liquidity pool with two tokens
     pub fn __constructor(e: Env, token_a: Address, token_b: Address) {
         if token_a >= token_b {
             panic!("token_a must be less than token_b");
@@ -160,10 +161,12 @@ impl LiquidityPool {
         put_reserve_b(&e, 0);
     }
 
+    /// Get user's share balance
     pub fn balance_shares(e: Env, user: Address) -> i128 {
         get_shares(&e, &user)
     }
 
+    /// Deposit liquidity into the pool
     pub fn deposit(
         e: Env,
         to: Address,
@@ -172,18 +175,13 @@ impl LiquidityPool {
         desired_b: i128,
         min_b: i128,
     ) {
-        // Depositor needs to authorize the deposit
         to.require_auth();
 
         let (reserve_a, reserve_b) = (get_reserve_a(&e), get_reserve_b(&e));
-
-        // Calculate deposit amounts
         let (amount_a, amount_b) =
             get_deposit_amounts(desired_a, min_a, desired_b, min_b, reserve_a, reserve_b);
 
         if amount_a <= 0 || amount_b <= 0 {
-            // If one of the amounts can be zero, we can get into a situation
-            // where one of the reserves is 0, which leads to a divide by zero.
             panic!("both amounts must be strictly positive");
         }
 
@@ -193,7 +191,6 @@ impl LiquidityPool {
         token_a_client.transfer(&to, &e.current_contract_address(), &amount_a);
         token_b_client.transfer(&to, &e.current_contract_address(), &amount_b);
 
-        // Now calculate how many new pool shares to mint
         let (balance_a, balance_b) = (get_balance_a(&e), get_balance_b(&e));
         let total_shares = get_total_shares(&e);
 
@@ -211,9 +208,7 @@ impl LiquidityPool {
         put_reserve_b(&e, balance_b);
     }
 
-    // If "buy_a" is true, the swap will buy token_a and sell token_b. This is flipped if "buy_a" is false.
-    // "out" is the amount being bought, with in_max being a safety to make sure you receive at least that amount.
-    // swap will transfer the selling token "to" to this contract, and then the contract will transfer the buying token to "to".
+    /// Swap tokens
     pub fn swap(e: Env, to: Address, buy_a: bool, out: i128, in_max: i128) {
         to.require_auth();
 
@@ -228,7 +223,6 @@ impl LiquidityPool {
             panic!("not enough token to buy");
         }
 
-        // First calculate how much needs to be sold to buy amount out from the pool
         let n = reserve_sell * out * 1000;
         let d = (reserve_buy - out) * 997;
         let sell_amount = (n / d) + 1;
@@ -236,7 +230,6 @@ impl LiquidityPool {
             panic!("in amount is over max")
         }
 
-        // Transfer the amount being sold to the contract
         let sell_token = if buy_a {
             get_token_b(&e)
         } else {
@@ -246,9 +239,6 @@ impl LiquidityPool {
         sell_token_client.transfer(&to, &e.current_contract_address(), &sell_amount);
 
         let (balance_a, balance_b) = (get_balance_a(&e), get_balance_b(&e));
-
-        // residue_numerator and residue_denominator are the amount that the invariant considers after
-        // deducting the fee, scaled up by 1000 to avoid fractions
         let residue_numerator = 997;
         let residue_denominator = 1000;
         let zero = 0;
@@ -264,7 +254,6 @@ impl LiquidityPool {
         };
 
         let (out_a, out_b) = if buy_a { (out, 0) } else { (0, out) };
-
         let new_inv_a = new_invariant_factor(balance_a, reserve_a, out_a);
         let new_inv_b = new_invariant_factor(balance_b, reserve_b, out_b);
         let old_inv_a = residue_denominator * reserve_a;
@@ -291,9 +280,7 @@ impl LiquidityPool {
         put_reserve_b(&e, new_reserve_b);
     }
 
-    // transfers share_amount of pool share tokens to this contract, burns all pools share tokens in this contracts, and sends the
-    // corresponding amount of token_a and token_b to "to".
-    // Returns amount of both tokens withdrawn
+    /// Withdraw liquidity from the pool
     pub fn withdraw(
         e: Env,
         to: Address,
@@ -311,7 +298,6 @@ impl LiquidityPool {
         let (balance_a, balance_b) = (get_balance_a(&e), get_balance_b(&e));
         let total_shares = get_total_shares(&e);
 
-        // Calculate withdrawal amounts
         let out_a = (balance_a * share_amount) / total_shares;
         let out_b = (balance_b * share_amount) / total_shares;
 
@@ -328,7 +314,18 @@ impl LiquidityPool {
         (out_a, out_b)
     }
 
-    pub fn get_rsrvs(e: Env) -> (i128, i128) {
+    /// Get current reserves
+    pub fn get_reserves(e: Env) -> (i128, i128) {
         (get_reserve_a(&e), get_reserve_b(&e))
+    }
+
+    /// Get token addresses
+    pub fn get_tokens(e: Env) -> (Address, Address) {
+        (get_token_a(&e), get_token_b(&e))
+    }
+
+    /// Get total shares
+    pub fn get_total_shares(e: Env) -> i128 {
+        get_total_shares(&e)
     }
 }
