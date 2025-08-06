@@ -5,7 +5,9 @@ members = [
 ]
 
 [workspace.dependencies]
-soroban-sdk = "22.0.0"
+#soroban-sdk = "23.0.0-rc.2.4"
+soroban-sdk = "22.0.8"
+num-integer = { version = "0.1.46", default-features = false, features = ["i128"] }
 
 [profile.release]
 opt-level = "z"
@@ -21,3 +23,8 @@ lto = true
 [profile.release-with-logs]
 inherits = "release"
 debug-assertions = true
+
+#[patch.crates-io]
+#num-integer = { path = "/path/to/your/num-integer" } # Replace with the actual path if it's local
+#num-traits = { path = "/path/to/your/num-traits" } # Same here, if it's local
+#num-traits = { features = [], default-features = false }

@@ -203,7 +203,7 @@ impl LiquidityPool {
             let shares_b = (balance_b * total_shares) / reserve_b;
             shares_a.min(shares_b)
         } else {
-            (balance_a * balance_b).sqrt()
+            (balance_a * balance_b).isqrt()
         };
 
         mint_shares(&e, &to, new_total_shares - total_shares);
