@@ -29,11 +29,15 @@ npm -v # Should print "10.9.3".
 ### Setting up dependencies
 
 1. Install dependencies:
+
 ```npm install```
 
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+3. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key as follows:
 
-3. Run the app:
+```GEMINI_API_KEY=PLACEHOLDER_API_KEY```
+
+4. Run the app:
+
 ```npm run dev```
 
 That’s it! The app should be running correctly in port 5173 (VITE reserved port) `http://localhost:5173`.
