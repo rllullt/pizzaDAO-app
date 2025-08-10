@@ -43,11 +43,12 @@ stellar keys generate pool-wallet --network testnet --fund
 ### 1. Compile
 
 ```bash
-# Compilar todos los contratos
+# Compile all contracts
+cd pizzaDAO-app/
 cargo build --target wasm32v1-none --release
 
-# O compilar individualmente
-cd contracts/liquidity_pool/
+# Or compile individually
+cd pizzaDAO-app/contracts/liquidity_pool/
 cargo build --target wasm32v1-none --release
 cd ../../contracts/faucet/
 cargo build --target wasm32v1-none --release
