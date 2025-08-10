@@ -43,7 +43,7 @@ npm -v # Should print "10.9.3".
 That’s it! The app should be running correctly in port 5173 (VITE reserved port) `http://localhost:5173`.
 
 
-## Disponibilizing the development app for everyone with testing purposes
+## Making the development app available for everyone with testing purposes
 
 > ⚠️ Caution: This procedure is not secure as it exposes an application in development mode through the web from your computer. Use it at your own risk.
 
