@@ -3,9 +3,21 @@
 Super-app that tokenizes parties, rewards organizers, and creates the world's most exciting digital economy.
 
 
-## Test identities
+## Using the frontend
 
-You can use the famous Alice and Bob identities for testing purposes. Configure them globally via:
+The frontend of the app is located at the `frontend/` directory.
+It is built with Vite.
+To test this part of the application you must move there and follow the instructions written in the README.
+```bash
+cd frontend/
+```
+
+
+## Using the smart contracts
+
+To test, it is important to configure Test identities.
+You can use the famous Alice and Bob identities.
+Configure them globally via:
 
 ```
 stellar keys generate --global alice --network testnet --fund
