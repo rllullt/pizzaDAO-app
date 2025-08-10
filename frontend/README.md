@@ -1,24 +1,43 @@
-# Run and deploy your AI Studio app
+# PizzaDAO App Frontend
 
-This contains everything you need to run your app locally.
+This folder contains everything you need to run your app locally, except some requisites that must be installed in your sistem.
 
 ## Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisites:**  Node.js v22.18.0 and NPM v10.9.3.
 
+### Installing node
+
+```bash
+# Download and install nvm:
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
+
+# in lieu of restarting the shell
+\. "$HOME/.nvm/nvm.sh"
+
+# Download and install Node.js:
+nvm install 22
+
+# Verify the Node.js version:
+node -v # Should print "v22.18.0".
+nvm current # Should print "v22.18.0".
+
+# Verify npm version:
+npm -v # Should print "10.9.3".
+```
+
+### Setting up dependencies
 
 1. Install dependencies:
-   `npm install`
+```npm install```
+
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
+
 3. Run the app:
-   `npm run dev`
+```npm run dev```
 
+That’s it! The app should be running correctly in port 5173 (VITE reserved port) `http://localhost:5173`.
 
-¡Perfecto! 🎉 El servidor ya está funcionando correctamente. Veo que:
-
-- ✅ Las dependencias se instalaron sin problemas
-- ✅ El servidor está corriendo en `http://localhost:8080/`
-- ✅ Vite está listo y funcionando
 
 ## **🌐 Ahora puedes acceder a tu aplicación:**
 
