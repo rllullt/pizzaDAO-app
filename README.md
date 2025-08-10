@@ -15,6 +15,13 @@ cd frontend/
 
 ## Using the smart contracts
 
+### Set up Stellar environment
+
+To be able to compile and deploy smart contracts to Stellar, it is important that you set up your environment.
+This can be done following the instructions on the [Getting started documentation](https://developers.stellar.org/docs/build/smart-contracts/getting-started/setup).
+
+### Create test identities
+
 To test, it is important to configure Test identities.
 You can use the famous Alice and Bob identities.
 Configure them globally via:
